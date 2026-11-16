@@ -4,7 +4,7 @@ import {
   hashPassword,
   SESSION_COOKIE_NAME,
 } from "@/server/auth";
-import { db } from "@/server/db";
+import { db, getDbType } from "@/server/db";
 
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
@@ -31,12 +31,16 @@ export async function POST(req: NextRequest) {
     });
   } catch (err) {
     console.error("[auth/login] Database error:", err);
+    const dbType = getDbType();
+    const detail =
+      dbType === "sqlite"
+        ? "Server Netlify masih memakai DATABASE_URL SQLite (file:./dev.db). Ganti DATABASE_URL di Netlify Environment Variables dengan URL PostgreSQL (Neon/Supabase) lalu Trigger Deploy."
+        : "Basis data PostgreSQL belum siap atau belum di-deploy ulang setelah mengatur DATABASE_URL. Buka Deploys → Trigger deploy → Clear cache and deploy site.";
     return NextResponse.json(
       {
         error: {
           code: "DB_UNAVAILABLE",
-          message:
-            "Basis data belum terhubung di server. Pastikan DATABASE_URL PostgreSQL sudah dikonfigurasi di Netlify.",
+          message: detail,
         },
       },
       { status: 503 }

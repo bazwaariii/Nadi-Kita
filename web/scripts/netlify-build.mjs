@@ -7,14 +7,29 @@ const run = (cmd, env = process.env) => {
   execSync(cmd, { stdio: "inherit", env });
 };
 
+function cleanDbUrl(raw) {
+  if (!raw) return "";
+  let cleaned = raw.trim();
+  if (cleaned.startsWith("psql ")) {
+    cleaned = cleaned.slice(5).trim();
+  }
+  if (
+    (cleaned.startsWith('"') && cleaned.endsWith('"')) ||
+    (cleaned.startsWith("'") && cleaned.endsWith("'"))
+  ) {
+    cleaned = cleaned.slice(1, -1).trim();
+  }
+  return cleaned;
+}
+
+const rawMain = cleanDbUrl(process.env.DATABASE_URL);
 const rawDbUrl =
-  process.env.DATABASE_URL && process.env.DATABASE_URL !== "file:./dev.db"
-    ? process.env.DATABASE_URL
-    : process.env.NETLIFY_DB_URL ||
-      process.env.NETLIFY_DATABASE_URL ||
-      process.env.POSTGRES_URL ||
-      process.env.DATABASE_URL ||
-      "";
+  rawMain && rawMain !== "file:./dev.db"
+    ? rawMain
+    : cleanDbUrl(process.env.NETLIFY_DB_URL) ||
+      cleanDbUrl(process.env.NETLIFY_DATABASE_URL) ||
+      cleanDbUrl(process.env.POSTGRES_URL) ||
+      rawMain;
 
 const isPostgres =
   rawDbUrl.startsWith("postgres://") || rawDbUrl.startsWith("postgresql://");
@@ -25,7 +40,9 @@ const buildEnv = {
 };
 
 if (isPostgres) {
-  console.log("[netlify-build] Detected PostgreSQL DATABASE_URL. Switching Prisma schema to PostgreSQL...");
+  console.log(
+    "[netlify-build] Detected PostgreSQL DATABASE_URL. Switching Prisma schema to PostgreSQL..."
+  );
   const pgSchemaPath = path.resolve("prisma/schema.postgres.prisma");
   const mainSchemaPath = path.resolve("prisma/schema.prisma");
   fs.copyFileSync(pgSchemaPath, mainSchemaPath);
@@ -47,13 +64,21 @@ if (isPostgres) {
   }
 
   if (count === 0) {
-    console.log("[netlify-build] Database is empty. Running initial demo seed...");
+    console.log(
+      "[netlify-build] Database is empty. Running initial demo seed..."
+    );
     run("npx tsx prisma/seed.ts", buildEnv);
   } else {
-    console.log(`[netlify-build] Database already seeded (${count} branch found). Skipping seed.`);
+    console.log(
+      `[netlify-build] Database already seeded (${count} branch found). Skipping seed.`
+    );
   }
 } else {
-  console.log("[netlify-build] No PostgreSQL DATABASE_URL detected. Generating Prisma Client with default schema...");
+  console.log(
+    "[netlify-build] No PostgreSQL DATABASE_URL detected (current: " +
+      (rawDbUrl || "unset") +
+      "). Generating Prisma Client with default schema..."
+  );
   run("npx prisma generate", buildEnv);
 }
 
