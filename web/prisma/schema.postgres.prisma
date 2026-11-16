@@ -1,0 +1,206 @@
+// Skema produksi PostgreSQL (Neon) sesuai planning.md Bagian 8.2
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role            { DONOR COORDINATOR ADMIN }
+enum BloodGroup      { A_POS A_NEG B_POS B_NEG AB_POS AB_NEG O_POS O_NEG }
+enum Sex             { F M }
+enum CampaignStatus  { DRAFT ACTIVE CLOSED CANCELLED }
+enum InvitationStatus{ QUEUED SENT OPENED SCREENED_OK SCREENED_NOT_ELIGIBLE BOOKED DECLINED EXPIRED FAILED }
+enum BookingStatus   { CONFIRMED CHECKED_IN COMPLETED DEFERRED NO_SHOW CANCELLED }
+enum HbStatus        { OK LOW UNKNOWN }
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String
+  passwordHash String
+  role         Role          @default(DONOR)
+  branchId     String?
+  createdAt    DateTime      @default(now())
+  donorProfile DonorProfile?
+}
+
+model Branch {
+  id          String   @id @default(cuid())
+  name        String
+  city        String
+  isSimulated Boolean  @default(true)
+  rules       Json
+  stock       StockLevel[]
+  slots       Slot[]
+  campaigns   Campaign[]
+}
+
+model StockLevel {
+  id         String     @id @default(cuid())
+  branchId   String
+  group      BloodGroup
+  units      Int
+  criticalAt Int
+  safeAt     Int
+  updatedAt  DateTime   @updatedAt
+  updatedBy  String?
+  branch     Branch     @relation(fields: [branchId], references: [id])
+  @@unique([branchId, group])
+}
+
+model DonorProfile {
+  id              String     @id @default(cuid())
+  userId          String?    @unique
+  fullName        String
+  email           String?
+  phone           String?
+  birthDate       DateTime
+  sex             Sex
+  bloodGroup      BloodGroup
+  cohort          String?
+  contactConsent  Boolean    @default(false)
+  consentAt       DateTime?
+  firstDonationAt DateTime?
+  lastDonationAt  DateTime?
+  donationCount   Int        @default(0)
+  nextEligibleAt  DateTime?
+  isSynthetic     Boolean    @default(false)
+  createdAt       DateTime   @default(now())
+  user            User?      @relation(fields: [userId], references: [id])
+  donations       Donation[]
+  invitations     Invitation[]
+  bookings        Booking[]
+  @@index([bloodGroup, nextEligibleAt])
+  @@index([cohort])
+}
+
+model Donation {
+  id         String   @id @default(cuid())
+  donorId    String
+  branchId   String
+  donatedAt  DateTime
+  volumeMl   Int      @default(350)
+  source     String   @default("APP")
+  bookingId  String?  @unique
+  donor      DonorProfile @relation(fields: [donorId], references: [id])
+  @@index([donorId, donatedAt])
+}
+
+model Campaign {
+  id                String         @id @default(cuid())
+  branchId          String
+  group             BloodGroup
+  targetUnits       Int
+  deadlineAt        DateTime
+  status            CampaignStatus @default(DRAFT)
+  cohortFilter      String?
+  overInviteFactor  Float          @default(1.5)
+  customInviteCount Int?
+  modelVersion      String?
+  createdById       String
+  createdAt         DateTime       @default(now())
+  sentAt            DateTime?
+  closedAt          DateTime?
+  branch            Branch         @relation(fields: [branchId], references: [id])
+  invitations       Invitation[]
+}
+
+model Invitation {
+  id         String           @id @default(cuid())
+  campaignId String
+  donorId    String
+  tokenHash  String           @unique
+  status     InvitationStatus @default(QUEUED)
+  score      Float
+  rank       Int
+  reasons    Json
+  channel    String?
+  sentAt     DateTime?
+  openedAt   DateTime?
+  expiresAt  DateTime
+  campaign   Campaign     @relation(fields: [campaignId], references: [id])
+  donor      DonorProfile @relation(fields: [donorId], references: [id])
+  screening  Screening?
+  booking    Booking?
+  @@unique([campaignId, donorId])
+  @@index([donorId, sentAt])
+}
+
+model Screening {
+  id                      String   @id @default(cuid())
+  invitationId            String   @unique
+  weightKg                Decimal  @db.Decimal(5, 1)
+  sleepHours              Decimal  @db.Decimal(3, 1)
+  hbStatus                HbStatus
+  lastDonationConfirmedAt DateTime?
+  eligible                Boolean
+  reasons                 Json
+  rulesVersion            String
+  createdAt               DateTime @default(now())
+  invitation              Invitation @relation(fields: [invitationId], references: [id])
+}
+
+model Slot {
+  id          String   @id @default(cuid())
+  branchId    String
+  startsAt    DateTime
+  endsAt      DateTime
+  capacity    Int
+  bookedCount Int      @default(0)
+  branch      Branch   @relation(fields: [branchId], references: [id])
+  bookings    Booking[]
+  @@unique([branchId, startsAt])
+}
+
+model Booking {
+  id           String        @id @default(cuid())
+  slotId       String
+  donorId      String
+  invitationId String?       @unique
+  code         String        @unique
+  status       BookingStatus @default(CONFIRMED)
+  checkedInAt  DateTime?
+  completedAt  DateTime?
+  outcomeNote  String?
+  cancelledAt  DateTime?
+  createdAt    DateTime      @default(now())
+  slot         Slot          @relation(fields: [slotId], references: [id])
+  donor        DonorProfile  @relation(fields: [donorId], references: [id])
+  invitation   Invitation?   @relation(fields: [invitationId], references: [id])
+  @@index([slotId, status])
+}
+
+model EventLog {
+  id        String   @id @default(cuid())
+  name      String
+  actorId   String?
+  role      Role?
+  entityId  String?
+  sessionId String?
+  meta      Json?
+  at        DateTime @default(now())
+  @@index([name, at])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String
+  action    String
+  entity    String
+  entityId  String
+  before    Json?
+  after     Json?
+  at        DateTime @default(now())
+}
+
+model ModelVersion {
+  id          String   @id
+  trainedAt   DateTime
+  metrics     Json
+  artifactUri String
+  isActive    Boolean  @default(false)
+}
+

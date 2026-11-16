@@ -1,0 +1,66 @@
+{
+  "banner": {
+    "prototype": "Prototipe STACK 2026. Seluruh data di situs ini simulasi.",
+    "staleStock": "Stok terakhir diperbarui {hours} jam lalu. Angka mungkin sudah berubah.",
+    "medicalDisclaimer": "Ini pemeriksaan awal. Petugas UTD tetap memeriksa kesehatan Anda sebelum donor."
+  },
+  "nav": {
+    "stock": "Stok",
+    "howItWorks": "Cara kerja",
+    "login": "Masuk",
+    "dashboard": "Dasbor",
+    "campaigns": "Permintaan",
+    "queue": "Antrean",
+    "slots": "Slot",
+    "metrics": "Metrik",
+    "home": "Beranda",
+    "ticket": "Tiket",
+    "history": "Riwayat",
+    "profile": "Profil"
+  },
+  "public": {
+    "heroTitle": "Darah yang dibutuhkan, donor yang sudah siap.",
+    "heroBody": "Nadi Kita menghubungkan stok UTD dengan donor yang sudah melewati masa jeda 60 hari, lengkap dengan jadwal 30 menit.",
+    "ctaDonor": "Masuk sebagai donor",
+    "ctaCoordinator": "Saya koordinator UTD",
+    "stockToday": "Stok hari ini",
+    "branchName": "UTD Simulasi Surabaya",
+    "howItWorksTitle": "Cara kerja",
+    "step1Title": "UTD memperbarui stok",
+    "step1Body": "Koordinator mencatat jumlah kantong per golongan darah. Golongan yang menipis atau kritis langsung terlihat.",
+    "step2Title": "Donor yang siap diundang",
+    "step2Body": "Sistem menyaring donor yang sudah melewati masa jeda 60 hari dan mengurutkan prioritas undangan.",
+    "step3Title": "Donor memilih jam",
+    "step3Body": "Donor menjawab 4 pertanyaan pemeriksaan awal lalu memilih jadwal 30 menit sesuai kuota.",
+    "step4Title": "Datang dan scan tiket",
+    "step4Body": "Petugas memindai tiket QR saat kedatangan dan menandai selesai donor untuk memulai ulang masa jeda."
+  },
+  "status": {
+    "critical": "Kritis",
+    "low": "Menipis",
+    "ok": "Aman",
+    "scheduled": "Terjadwal",
+    "checkedIn": "Hadir",
+    "completed": "Selesai",
+    "deferred": "Ditunda",
+    "cancelled": "Dibatalkan",
+    "noShow": "Tidak hadir"
+  },
+  "empty": {
+    "campaigns": "Belum ada permintaan donor aktif. Buat permintaan saat stok satu golongan menipis.",
+    "history": "Belum ada riwayat donor. Riwayat muncul setelah donor pertama Anda di UTD.",
+    "queue": "Belum ada jadwal untuk hari ini."
+  },
+  "errors": {
+    "slotFull": "Jam {time} baru saja penuh. Pilih jam lain di bawah.",
+    "activeBookingExists": "Anda sudah punya jadwal pada {date}, {time}. Batalkan dulu bila ingin memilih jam lain.",
+    "tokenExpired": "Tautan undangan ini sudah tidak berlaku. Hubungi UTD untuk mendapat undangan baru.",
+    "qrOutsideWindow": "Tiket ini untuk {slotTime}. Check-in dibuka mulai {openTime}.",
+    "mlFallback": "Peringkat sementara. Layanan skor belum merespons, urutan memakai aturan sederhana.",
+    "network": "Koneksi terputus. Perubahan belum tersimpan. Coba lagi."
+  },
+  "consent": {
+    "registration": "Saya setuju dihubungi oleh UTD terkait permintaan donor. Data saya dipakai hanya untuk keperluan itu."
+  }
+}
+

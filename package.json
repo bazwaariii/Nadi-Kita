@@ -1,0 +1,21 @@
+{
+  "name": "nadi-kita-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nadi Kita — Tim Kita Peduli · STACK 2026",
+  "scripts": {
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "start": "npm --prefix web run start",
+    "lint": "npm --prefix web run lint",
+    "typecheck": "npm --prefix web run typecheck",
+    "test": "npm --prefix web run test:run",
+    "db:migrate": "npm --prefix web run db:migrate",
+    "db:seed": "npm --prefix web run db:seed",
+    "db:reset-demo": "npm --prefix web run db:reset-demo",
+    "db:purge-volunteers": "npm --prefix web run db:purge-volunteers",
+    "ml:train": "cd ml && python -m src.train",
+    "ml:serve": "cd ml && python -m uvicorn service.main:app --host 127.0.0.1 --port 8000"
+  }
+}
+

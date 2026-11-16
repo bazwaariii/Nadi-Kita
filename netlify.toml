@@ -1,0 +1,8 @@
+# Netlify Configuration for Nadi Kita Monorepo
+[build]
+  base = "web"
+  command = "npx prisma generate && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"

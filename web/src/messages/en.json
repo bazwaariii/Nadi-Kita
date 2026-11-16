@@ -1,0 +1,39 @@
+{
+  "banner": {
+    "prototype": "STACK 2026 Prototype. All data on this site is simulated.",
+    "staleStock": "Stock was last updated {hours} hours ago. Numbers may have changed.",
+    "medicalDisclaimer": "This is a pre-screening check. UTD staff will still examine your health before donation."
+  },
+  "nav": {
+    "stock": "Stock",
+    "howItWorks": "How it works",
+    "login": "Sign in",
+    "dashboard": "Dashboard",
+    "campaigns": "Requests",
+    "queue": "Queue",
+    "slots": "Slots",
+    "metrics": "Metrics",
+    "home": "Home",
+    "ticket": "Ticket",
+    "history": "History",
+    "profile": "Profile"
+  },
+  "public": {
+    "heroTitle": "The blood needed, the donors who are ready.",
+    "heroBody": "Nadi Kita connects UTD blood inventory with donors who have passed the 60-day recovery period, complete with 30-minute time slots.",
+    "ctaDonor": "Sign in as donor",
+    "ctaCoordinator": "I am a UTD coordinator",
+    "stockToday": "Stock today",
+    "branchName": "UTD Simulasi Surabaya",
+    "howItWorksTitle": "How it works",
+    "step1Title": "UTD updates stock",
+    "step1Body": "Coordinators update unit counts across eight blood groups. Low or critical groups are flagged immediately.",
+    "step2Title": "Eligible donors are invited",
+    "step2Body": "The system filters out donors still in their 60-day recovery window and ranks eligible candidates.",
+    "step3Title": "Donors pick a time",
+    "step3Body": "Donors complete a 4-question pre-check and reserve a 30-minute slot within capacity.",
+    "step4Title": "Arrive and scan ticket",
+    "step4Body": "Staff scan the QR ticket upon arrival and mark completion to reset the 60-day recovery timer."
+  }
+}
+

@@ -1,0 +1,56 @@
+name: Nadi Kita CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  web-quality:
+    name: Web Lint, Typecheck & Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+          cache-dependency-path: web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Unit & Integration Tests (Vitest)
+        run: pnpm test:run
+
+  ml-quality:
+    name: ML Service & Pipeline Tests (pytest)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ml
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Train & Verify Artifacts
+        run: python -m src.train
+      - name: Run pytest
+        run: pytest -v
+

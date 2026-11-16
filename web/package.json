@@ -1,0 +1,42 @@
+{
+  "name": "nadi-kita-web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "db:migrate": "prisma db push --accept-data-loss && tsx prisma/apply-constraints.ts",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset-demo": "tsx prisma/reset-demo.ts",
+    "db:purge-volunteers": "tsx prisma/purge-volunteers.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "lucide-react": "^0.475.0",
+    "next": "^15.2.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "swr": "^2.3.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.9",
+    "@types/node": "^22.13.5",
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "postcss": "^8.5.3",
+    "prisma": "^6.4.1",
+    "tailwindcss": "^4.0.9",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}
+

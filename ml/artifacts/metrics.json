@@ -1,0 +1,87 @@
+{
+  "modelVersion": "return-lr-v1",
+  "trainedAt": "2026-11-15T13:46:42.007678+00:00",
+  "dataset": {
+    "name": "UCI Blood Transfusion Service Center Data Set",
+    "source": "I-Cheng Yeh (2008), Hsin-Chu City, Taiwan",
+    "rows": 748,
+    "positive_count": 178,
+    "positive_rate": 0.238,
+    "monetary_equals_250x_frequency": true,
+    "monetary_frequency_correlation": 1.0,
+    "monetary_ratio_min": 250.0,
+    "monetary_ratio_max": 250.0,
+    "train_rows": 598,
+    "test_rows": 150
+  },
+  "features": [
+    "recency_months",
+    "log_frequency",
+    "tenure_months",
+    "rate_per_month"
+  ],
+  "coefficients": {
+    "recency_months": -1.3714,
+    "log_frequency": 0.674,
+    "tenure_months": -0.5899,
+    "rate_per_month": 0.0457
+  },
+  "intercept": -1.682,
+  "scaler": {
+    "mean": [
+      10.1957,
+      1.6243,
+      27.9716,
+      0.2184
+    ],
+    "scale": [
+      9.393,
+      0.666,
+      22.9607,
+      0.122
+    ]
+  },
+  "cv_comparison": {
+    "logistic_regression": {
+      "roc_auc_mean": 0.7853,
+      "roc_auc_std": 0.0271,
+      "pr_auc_mean": 0.523,
+      "brier_mean": 0.149
+    },
+    "shallow_decision_tree": {
+      "roc_auc_mean": 0.7756,
+      "roc_auc_std": 0.0378,
+      "pr_auc_mean": 0.4783,
+      "brier_mean": 0.1498
+    },
+    "gradient_boosting": {
+      "roc_auc_mean": 0.7706,
+      "roc_auc_std": 0.0298,
+      "pr_auc_mean": 0.4798,
+      "brier_mean": 0.1527
+    }
+  },
+  "test_metrics": {
+    "roc_auc": 0.7111,
+    "pr_auc": 0.3863,
+    "brier_score": 0.1663,
+    "lift_top_20pct": 1.6667,
+    "calibration_curve": {
+      "prob_pred": [
+        0.049,
+        0.1246,
+        0.2257,
+        0.3684,
+        0.4851
+      ],
+      "prob_true": [
+        0.0,
+        0.1724,
+        0.2333,
+        0.4,
+        0.4
+      ]
+    }
+  },
+  "firstTimerPrior": 0.2
+}

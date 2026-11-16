@@ -1,0 +1,21 @@
+{
+  "version": "2026-11-v1",
+  "cooldownDays": 60,
+  "age": { "min": 17, "max": 60 },
+  "minWeightKg": 45,
+  "minSleepHours": 4,
+  "minHbGdl": 12.5,
+  "maxDonationsPerRollingYear": null,
+  "bookBeforeMin": 60,
+  "cancelBeforeMin": 120,
+  "checkInWindowMin": { "before": 30, "after": 30 },
+  "invitation": {
+    "expiresHours": 48,
+    "maxPerDonor30d": 2,
+    "overInviteFactor": 1.5,
+    "maxInvitesPerCampaign": 80
+  },
+  "firstTimerPrior": 0.2,
+  "slot": { "minutes": 30, "capacity": 4 }
+}
+

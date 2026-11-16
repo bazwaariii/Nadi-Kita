@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: nadikita-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: nadikita
+      POSTGRES_PASSWORD: nadikita_dev_password
+      POSTGRES_DB: nadikita
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nadikita -d nadikita"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ml-service:
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    container_name: nadikita-ml
+    restart: unless-stopped
+    environment:
+      ML_SERVICE_KEY: dev-ml-service-key-2026
+      PORT: 8000
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
+
