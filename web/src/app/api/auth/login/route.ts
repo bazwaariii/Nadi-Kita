@@ -23,10 +23,25 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const user = await db.user.findUnique({
-    where: { email },
-    include: { donorProfile: true },
-  });
+  let user;
+  try {
+    user = await db.user.findUnique({
+      where: { email },
+      include: { donorProfile: true },
+    });
+  } catch (err) {
+    console.error("[auth/login] Database error:", err);
+    return NextResponse.json(
+      {
+        error: {
+          code: "DB_UNAVAILABLE",
+          message:
+            "Basis data belum terhubung di server. Pastikan DATABASE_URL PostgreSQL sudah dikonfigurasi di Netlify.",
+        },
+      },
+      { status: 503 }
+    );
+  }
 
   if (!user) {
     return NextResponse.json(

@@ -8,9 +8,18 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+const resolvedDbUrl =
+  process.env.DATABASE_URL && process.env.DATABASE_URL !== "file:./dev.db"
+    ? process.env.DATABASE_URL
+    : process.env.NETLIFY_DB_URL ||
+      process.env.NETLIFY_DATABASE_URL ||
+      process.env.POSTGRES_URL ||
+      process.env.DATABASE_URL;
+
 export const db =
   globalForPrisma.prisma ??
   new PrismaClient({
+    ...(resolvedDbUrl ? { datasources: { db: { url: resolvedDbUrl } } } : {}),
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 

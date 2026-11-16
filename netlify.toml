@@ -1,7 +1,7 @@
 # Netlify Configuration for Nadi Kita Monorepo (Root)
 [build]
   base = "web"
-  command = "npx prisma generate && npm run build"
+  command = "node scripts/netlify-build.mjs"
   publish = ".next"
 
 [[plugins]]
