@@ -20,20 +20,41 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const now = new Date();
-  const [initialStock, rawSlots] = await Promise.all([
-    getInitialStockSnapshot(),
-    db.slot.findMany({
-      where: {
-        branchId: env.DEFAULT_BRANCH_ID,
-        startsAt: {
-          gte: new Date(now.getTime() - 2 * 3600 * 1000),
-          lte: new Date(now.getTime() + 5 * 24 * 3600 * 1000),
-        },
-      },
-      orderBy: { startsAt: "asc" },
-      take: 48,
-    }),
-  ]);
+  let initialStock;
+  let rawSlots: Array<{
+    id: string;
+    startsAt: Date;
+    capacity: number;
+    bookedCount: number;
+  }> = [];
+
+  try {
+    const [stockRes, slotsRes] = await Promise.all([
+      getInitialStockSnapshot().catch(() => null),
+      db.slot
+        .findMany({
+          where: {
+            branchId: env.DEFAULT_BRANCH_ID,
+            startsAt: {
+              gte: new Date(now.getTime() - 2 * 3600 * 1000),
+              lte: new Date(now.getTime() + 5 * 24 * 3600 * 1000),
+            },
+          },
+          orderBy: { startsAt: "asc" },
+          take: 48,
+        })
+        .catch(() => []),
+    ]);
+    initialStock = stockRes;
+    rawSlots = slotsRes || [];
+  } catch {
+    initialStock = await getInitialStockSnapshot();
+    rawSlots = [];
+  }
+
+  if (!initialStock) {
+    initialStock = await getInitialStockSnapshot();
+  }
 
   const publicSlots: PublicSlotItem[] = rawSlots.map((s) => ({
     id: s.id,

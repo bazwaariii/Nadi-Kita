@@ -16,6 +16,8 @@
     "db:purge-volunteers": "npm --prefix web run db:purge-volunteers",
     "ml:train": "cd ml && python -m src.train",
     "ml:serve": "cd ml && python -m uvicorn service.main:app --host 127.0.0.1 --port 8000"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.16.7"
   }
 }
-

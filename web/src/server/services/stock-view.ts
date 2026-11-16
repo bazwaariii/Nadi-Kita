@@ -9,12 +9,19 @@ import { env } from "@/server/env";
 
 export async function getInitialStockSnapshot(): Promise<StockApiResponse> {
   const branchId = env.DEFAULT_BRANCH_ID;
-  const branch = await db.branch.findUnique({
-    where: { id: branchId },
-    include: { stock: true },
-  });
+  let branch: any = null;
+  try {
+    branch = await db.branch.findUnique({
+      where: { id: branchId },
+      include: { stock: true },
+    });
+  } catch (err) {
+    console.warn("Could not query branch from DB, using fallback snapshot:", err);
+  }
 
-  const byGroup = new Map((branch?.stock || []).map((s) => [s.group, s]));
+  const byGroup = new Map<string, any>(
+    (branch?.stock || []).map((s: any) => [s.group, s])
+  );
   let latestUpdate = new Date(0);
 
   const stock = BLOOD_GROUP_ORDER.map((groupCode) => {
